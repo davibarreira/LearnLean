@@ -1,3 +1,3 @@
 # LearnLean
 
-This is a personal repository for keeping notes on learning Lean4, 
+Personal repo for learning Lean4.
