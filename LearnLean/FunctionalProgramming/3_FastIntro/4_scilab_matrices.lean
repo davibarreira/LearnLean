@@ -43,3 +43,16 @@ def R : Transformation 2 :=
 #eval T.eval examplePoint
 #eval (T.comp T).eval examplePoint
 #eval R.eval examplePoint
+
+instance : HMul (Transformation n) (Float^[n]) (Float^[n]) where
+  hMul := Transformation.eval
+
+instance : HMul (Transformation n) (Transformation n) (Transformation n) where
+  hMul := Transformation.comp
+
+infixr:80 " ∘ " => Transformation.comp
+
+#eval T * examplePoint
+#eval (T ∘ T) * examplePoint
+#eval (T ∘ T ∘ T) * examplePoint
+#eval T ∘ T ∘ T * examplePoint
