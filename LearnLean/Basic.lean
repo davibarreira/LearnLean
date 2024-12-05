@@ -1,7 +1,3 @@
-set_option autoImplicit true
-def hello := "world"
+def hello :String := "Hello"
 
-def length (xs : List α) : Nat :=
-  match xs with
-  | [] => 0
-  | y :: ys => Nat.succ (length ys)
+#eval hello
