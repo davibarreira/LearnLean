@@ -110,3 +110,4 @@ def myM : M := ⟨42⟩
 
 #eval myM
 #eval myM.val
+#eval myM.inst.fm myM.val == 43

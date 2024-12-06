@@ -18,7 +18,10 @@ structure M where
   [inst : MInterface T]
   [repr : Repr T]
   val : T
-  deriving Repr
+deriving Repr
+
+def m : M := M.mk (5 : Nat)
+#check m.val
 
 
 
@@ -76,3 +79,11 @@ def l2 : List M := [M.mk 1, M.mk "ok", M.mk m1] -- [1, "ok", "no-repr"]
 
 def l3 : List M := [⟨1⟩, ⟨"ok"⟩, ⟨m1⟩]
 #eval l3
+#eval l3[1]
+
+def mm : M := M.mk (10 : Nat)
+#check mm.val
+#check mm.T
+
+
+#eval MInterface.fm mm.val

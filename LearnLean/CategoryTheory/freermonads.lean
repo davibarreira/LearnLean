@@ -2,6 +2,32 @@ inductive Free (f : Type → Type) (α : Type) where
   | pure : α → Free f α
   | free : ∀ x, f x -> (x -> Free f α) → Free f α
 
+inductive F (α : Type) where
+  | one : α → F α
+  | two : α → α → F α
+deriving Repr, Inhabited
+
+def x : F Nat := F.one 10
+#eval x
+
+
+-- inductive F (α : Type) where
+--   | one : α → F α
+--   | two : α × α → F α
+
+-- def x : F Nat := F.one 10
+-- #eval x
+
+-- structure F (α : Type) where
+--   One : α
+--   Two : α × α
+-- deriving Repr
+
+
+-- instance : Functor F where
+--   map f a :=
+--   match a with
+--   | one =>
 -- namespace Free
 
 -- -- Functor instance for Free f
