@@ -23,7 +23,7 @@ instance : Monad Option where
 def Monad.bind {α β : Type} {m : Type → Type} [Functor m] [Monad m] : m α → (α → m β) → m β :=
   fun ma f => Monad.μ (Functor.map f ma)
 
-infixl:55 " >=> " => Monad.bind
+infixl:55 " ⋊ " => Monad.bind
 
 #eval Monad.μ (some (some 10))
 
@@ -32,8 +32,8 @@ def myf (a : Nat) : Option Nat :=
   else none
 
 #eval Monad.μ (Functor.map myf (some 20))
-#eval some 20 >=> myf
-#eval (none : Option Nat) >=> myf
+#eval some 20 ⋊ myf
+#eval (none : Option Nat) ⋊ myf
 
 #eval (fun x => x+1) <$> some 10
 
