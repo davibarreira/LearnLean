@@ -101,11 +101,26 @@ def μ : FreeF (FreeF α) → FreeF α
   | FreeF.one a => μ a
   | FreeF.two a b => FreeF.two (μ a) (μ b)
 
+def freebind : (FreeF α) → (α → FreeF β) → (FreeF β) :=
+  fun ma f => (μ ∘ (FreeF.map f)) ma
+
+instance : Monad FreeF where
+  pure := η
+  bind := freebind
+
 def tt := FreeF.one (FreeF.pure (FreeF.one (FreeF.pure 10)))
 #eval μ tt
 
 def tt2 := FreeF.two (FreeF.pure (FreeF.one (FreeF.pure 10))) (FreeF.pure (FreeF.one (FreeF.pure 10)))
 #eval μ tt2
+#eval myf <$> μ tt2
+
+
+#check tt
+#check μ ∘ (FreeF.map (η ∘ myf))
+#eval (η ∘ myf) 1
+#eval (μ ∘ (FreeF.map (η ∘ myf))) y
+
 
 -- #check fun x {α} : F α => Functor.map (fun x => x + 1)
 -- #check t

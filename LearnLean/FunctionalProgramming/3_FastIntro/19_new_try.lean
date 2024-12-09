@@ -15,6 +15,10 @@ instance : Monoid (List α) where
   e := []
   op x y:= x ++ y
 
+instance : Monoid String where
+  e := ""
+  op x y:= x ++ y
+
 inductive Free (F : Type → Type) (α : Type u)
 | protected pure : α → Free F α
 | free : ∀ (β : Type) [Monoid β], F β → (β → Free F α) → Free F α
@@ -29,6 +33,10 @@ protected def bind : Free F α → (α → Free F β) → Free F β
 instance instMonad : Monad (Free f) where
   pure := Free.pure
   bind := Free.bind
+
+
+def η {F : Type → Type} {α : Type u} : α → Free F α := Free.pure
+
 
 -- instance instMonadLift : MonadLift M (Free M) where
 --   monadLift m := free _ m .pure
@@ -67,6 +75,13 @@ def exampleDo2 : Free F Nat := do
 -- Tentative to make monadLift easier to use
 -- def η {α : Type} (x : F α) : Free F α := (monadLift x : Free F α)
 -- #check η (F.one 10)
+-- def η {α : Type} (x : F α) : Free F α := do
+--   let a ← pure x
+--   pure (a)
+
+-- #check (Free.pure (F.one 10) : Free F Nat)
+-- def η (x : F α) : Free F α := Free.pure x
+-- def η (x : F α) : Free F α :=
 
 def algF [Monoid α] : F α → α
   | F.one x => x
@@ -86,3 +101,34 @@ def ex : Free F (List Nat) := do
   let m ← free (List Nat) (F.two a b) pure
   let n ← free (List Nat) (F.two m c) pure
   pure (n)
+
+#eval alg ex
+
+
+def v (n : α) : Free F α := do
+  let a ← pure n
+  pure a
+
+#check Free F Nat
+#check Free F (Free F Nat)
+
+
+def μ {M : Type 1 → Type 1} [Monad M] {α : Type 1} (mma : M (M α)) : M α :=
+  mma >>= id
+
+-- protected def bind : Free F (Free F a) → ( (Free F a)  → Free F β) → Free F β
+#eval alg ((fun x : Nat => x-1) <$> exampleDo2)
+
+def mm := v (v 10)
+#check mm
+-- #check mm >>= id
+
+def ex2 : Free F String := do
+  let a ← pure "a"
+  let b ← pure "b"
+  let c ← pure "c"
+  let m ← free String (F.two a b) pure
+  let n ← free String (F.two m c) pure
+  pure (n)
+
+#eval alg ex2

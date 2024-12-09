@@ -67,6 +67,7 @@ def algF : F Nat → Nat
 -- Tentative to make monadLift easier to use
 def η {α : Type} (x : F α) : Free F α := (monadLift x : Free F α)
 
+
 -- | free : ∀ (β : Type u), F β → (β → Free F α) → Free F α
 -- def alg : Free F Nat → Nat
 --   | Free.pure a => a
