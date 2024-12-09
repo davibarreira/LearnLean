@@ -62,7 +62,61 @@ def unfree : FreeF (F α) → F (FreeF α)
     | (F.two x y, F.one z) => F.two (FreeF.two x y) (FreeF.one z)
     | (F.two x y, F.two z w) => F.two (FreeF.two x y) (FreeF.two z w)
 
+-- def free : F (FreeF α) → FreeF (F α)
+--   | F.one a =>
+--     match a with
+--     | FreeF.one
+
+def free : F (FreeF α) → FreeF α
+  | F.one a => FreeF.one a
+  | F.two a b => FreeF.two a b
+
 #eval unfree (FreeF.pure (F.one 10))
+
+def t := FreeF.pure (F.one 10)
+#eval free (unfree  t)
+
+def FreeF.map (f : α → β) (a : FreeF α) : FreeF β :=
+  match a with
+  | FreeF.pure x => FreeF.pure (f x)
+  | FreeF.one x => FreeF.one (FreeF.map f x)
+  | FreeF.two x y => FreeF.two (FreeF.map f x) (FreeF.map f y)
+
+instance : Functor FreeF where
+  map := FreeF.map
+
+def liftF {α β : Type} (f: α → β) : (F α → F β) := Functor.map f
+
+def myf (x : Nat) : Nat := x + 1
+#check liftF myf
+
+def v := FreeF.one (FreeF.pure 10)
+#eval myf <$> v
+
+
+def η : α → FreeF α := fun a => FreeF.pure a
+
+def μ : FreeF (FreeF α) → FreeF α
+  | FreeF.pure a => a
+  | FreeF.one a => μ a
+  | FreeF.two a b => FreeF.two (μ a) (μ b)
+
+def tt := FreeF.one (FreeF.pure (FreeF.one (FreeF.pure 10)))
+#eval μ tt
+
+def tt2 := FreeF.two (FreeF.pure (FreeF.one (FreeF.pure 10))) (FreeF.pure (FreeF.one (FreeF.pure 10)))
+#eval μ tt2
+
+-- #check fun x {α} : F α => Functor.map (fun x => x + 1)
+-- #check t
+
+  -- | (f, a) =>
+  --   match a with
+  --     | FreeF.pure x => FreeF.pure (f x)
+  --     | _ x => FreeF.pure (f x)
+
+-- fmap(f::Function, x::Pure)    = Pure(f(x._1))
+-- fmap(f::Function, x::FreeF) = free(fmap(y->fmap(f,y), unfree(x)))
 -- open FreeF in
 -- def μ : FreeF (FreeF α) → FreeF α
 --   | FreeF.pure a => a
